@@ -1,0 +1,51 @@
+{
+    "name": "prestashopheaven/runtime-admin-assets",
+    "description": "Loads a PrestaHaven module's admin scripts on its own back-office pages only (after the admin theme), and the TypeScript helpers that start core admin components when they exist.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "George van Engers",
+            "email": "vanengers@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "prestashopheaven/runtime-kit": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "PrestaShopHeaven\\Runtime\\AdminAssets\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PrestaShopHeaven\\Runtime\\AdminAssets\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "1.x-dev"
+        },
+        "prestashopheaven": {
+            "kind": "runtime",
+            "use-when": "A module adds JavaScript to its own back-office pages (actionAdminControllerSetMedia, HK-05/HK-11), or its admin TypeScript waits for window.prestashop.component and starts core components (Grid, MultistoreConfigField, TranslatableInput).",
+            "keywords": [
+                "admin",
+                "back-office",
+                "javascript",
+                "typescript",
+                "assets",
+                "actionAdminControllerSetMedia",
+                "addJS",
+                "admin-components",
+                "onAdminReady",
+                "initComponents"
+            ],
+            "phpstan-paths": [
+                "src",
+                "tests/phpstan/fixtures"
+            ]
+        }
+    }
+}
