@@ -58,18 +58,19 @@ final class AdminAssets
      * Adds views/js/<script>.js of the module for each script; returns the URLs added (none when the controller
      * cannot add scripts).
      *
+     * @param object $module the module (getPathUri() and $version; a \Module, or a stand-in in tests)
      * @param list<string> $scripts script names without .js
      *
      * @return list<string>
      */
-    public static function addScripts(\Module $module, mixed $controller, array $scripts): array
+    public static function addScripts(object $module, mixed $controller, array $scripts): array
     {
         if (!is_object($controller) || !method_exists($controller, 'addJS')) {
             return [];
         }
         $added = [];
         foreach ($scripts as $script) {
-            $url = $module->getPathUri() . 'views/js/' . $script . '.js?v=' . $module->version;
+            $url = self::baseUri($module) . 'views/js/' . $script . '.js?v=' . self::version($module);
             $controller->addJS($url);
             $added[] = $url;
         }
@@ -80,22 +81,39 @@ final class AdminAssets
     /**
      * Adds views/css/<style>.css of the module for each style; returns the URLs added.
      *
+     * @param object $module the module (getPathUri() and $version; a \Module, or a stand-in in tests)
      * @param list<string> $styles style names without .css
      *
      * @return list<string>
      */
-    public static function addStyles(\Module $module, mixed $controller, array $styles): array
+    public static function addStyles(object $module, mixed $controller, array $styles): array
     {
         if (!is_object($controller) || !method_exists($controller, 'addCSS')) {
             return [];
         }
         $added = [];
         foreach ($styles as $style) {
-            $url = $module->getPathUri() . 'views/css/' . $style . '.css?v=' . $module->version;
+            $url = self::baseUri($module) . 'views/css/' . $style . '.css?v=' . self::version($module);
             $controller->addCSS($url);
             $added[] = $url;
         }
 
         return $added;
+    }
+
+    /**
+     * The URL path of the module folder ('' when the object has no getPathUri()).
+     */
+    private static function baseUri(object $module): string
+    {
+        return method_exists($module, 'getPathUri') ? (string) $module->getPathUri() : '';
+    }
+
+    /**
+     * The version of the module, against old browser caches ('' when the object has none).
+     */
+    private static function version(object $module): string
+    {
+        return property_exists($module, 'version') ? (string) $module->version : '';
     }
 }

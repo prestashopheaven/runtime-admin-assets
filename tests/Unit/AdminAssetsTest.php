@@ -75,6 +75,25 @@ final class AdminAssetsTest extends TestCase
         self::assertNull(AdminAssets::controllerName('AdminHeavenfooLog'));
     }
 
+    public function testAnyModuleLikeObjectWorksAndMissingPartsAreEmpty(): void
+    {
+        $standIn = new class {
+            /** @var string */
+            public $version = '2.0.0';
+
+            /**
+             * The module path of the stand-in.
+             */
+            public function getPathUri(): string
+            {
+                return '/modules/standin/';
+            }
+        };
+
+        self::assertSame(['/modules/standin/views/js/a.js?v=2.0.0'], AdminAssets::addScripts($standIn, $this->controller('x'), ['a']));
+        self::assertSame(['views/css/b.css?v='], AdminAssets::addStyles(new \stdClass(), $this->controller('x'), ['b']));
+    }
+
     public function testAControllerThatCannotAddAssetsGetsNothing(): void
     {
         self::assertSame([], AdminAssets::addScripts(new \Module(), new \stdClass(), ['admin-log']));
